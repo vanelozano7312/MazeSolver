@@ -1,11 +1,5 @@
 import csv, pygame
-
-#Colores
-colors = {     
-    'lilac' : (242, 193, 255),
-    'purple' : (205, 127, 247),
-    'violet' : (126, 52, 165)
-}
+from colors import colors
 
 #Función que dado un path de un archivo .csv retorna el tamaño (filas, columnas) del laberinto 
 def mazesize(path):
@@ -21,6 +15,7 @@ def mazesize(path):
         # print(f'Processed {line_count} lines and {row_count} rows.')
         return line_count, column_count
 
+
 #Función que dada una matriz MxN calcula el tamaño de cada celda y el inicio en X y Y a dibujar
 # (está como si la pantalla default fuera de 700x700)
 def displaysize(m, n):
@@ -34,9 +29,10 @@ def displaysize(m, n):
         x_start = 0
     return cell_size, x_start, y_start
     
+    
 #Función que dibuja el maze
 # (está como si la pantalla default fuera de 700x700)
-def mazedraw(screen, path, cell_size, x_start, y_start):
+def mazedraw(screen, color, path, cell_size, x_start, y_start):
     with open(path) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         y = y_start
@@ -45,6 +41,6 @@ def mazedraw(screen, path, cell_size, x_start, y_start):
                 x = x_start
                 for cell in row:
                     if cell == 'w':
-                        pygame.draw.rect(screen, colors['violet'], (x, y, cell_size, cell_size))
+                        pygame.draw.rect(screen, colors[color][2], (x, y, cell_size, cell_size))
                     x = x + cell_size 
                 y = y + cell_size

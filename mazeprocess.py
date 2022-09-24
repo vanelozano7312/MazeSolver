@@ -33,6 +33,7 @@ def displaysize(m, n):
 #Función que dibuja el maze
 # (está como si la pantalla default fuera de 700x700)
 def mazedraw(screen, color, path, cell_size, x_start, y_start):
+    pygame.draw.rect(screen, colors[color][1], (0, 0, 700, 700))
     with open(path) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         y = y_start

@@ -31,7 +31,7 @@ class Game(object):
         self.b_ae = Button(images_data['menu_buttons'][0], images_data['menu_buttons'][1][5], 'b_ae')
         self.b_home = Button(images_data['home'][0], images_data['home'][1], 'b_home')
         self.b_run = Button(images_data['runmaze'][0], images_data['runmaze'][1], 'b_run')
-        self.b_run.pressed(images_data['runmaze'][0], 'b_runpressed')
+        # self.b_run.pressed(images_data['runmaze'][0], 'b_runpressed')
         self.click_upload_maze = False
         self.click_b_5x5 = False
         self.click_b_10x10 = False
@@ -59,7 +59,6 @@ class Game(object):
 
             #Si no se ha resuelto mira si algún botón válido ha sido presionado
             if not self.solved_maze: 
-                  
                 if self.page == 'home':
                     self.click_upload_maze = self.upload_maze.button_pressed(event)
                     self.click_b_5x5 = self.b_5x5.button_pressed(event)
@@ -122,7 +121,7 @@ class Game(object):
                     elif self.click_b_ae:
                         self.solve_method = 'ae'
                 else:                        
-                    if self.click_b_run:
+                    if self.click_b_run and not self.solving:
                         self.solving = not self.solving
     
     
@@ -156,7 +155,8 @@ class Game(object):
                 
                 #fondo
                 maze_draw(screen, self.color, self.path, self.cell_size, self.x_start, self.y_start)
-                self.b_run.draw_pressed(screen, self.solving)
+                if not self.solving:
+                    self.b_run.draw(screen)
                 
             ##Mostramos el menú si aún no se escogío un método
                 if self.solve_method == '':

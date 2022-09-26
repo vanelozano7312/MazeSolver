@@ -1,4 +1,5 @@
 import csv, pygame
+from multiprocessing.connection import wait
 import time
 from data import colors
 import shutil
@@ -60,3 +61,11 @@ def maze_draw(screen, color, path, cell_size, x_start, y_start):
                         pygame.draw.rect(screen, colors[color][2], (x, y, cell_size, cell_size))
                     x = x + cell_size 
                 y = y + cell_size
+                
+#Función que dibuja la solucion del maze
+def maze_draw_solution(screen, color, cell_size, solution_path):
+    for cell in solution_path:
+        pygame.draw.rect(screen, colors[color][0], (cell_size*(cell[1]-1), cell_size*(cell[0]-1), cell_size, cell_size))
+        pygame.time.wait(100)
+        pygame.display.flip()
+        

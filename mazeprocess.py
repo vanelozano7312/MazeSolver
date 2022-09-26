@@ -1,16 +1,20 @@
 import csv, pygame
-from colors import colors
+import time
+from data import colors
 import shutil
 import tkinter, os
 import tkinter.filedialog
 
 #Función que permite al usuario subir un archivo .csv y lo guarda en static/mazes/user_maze
 def upload_maze():
-    top = tkinter.Tk()
-    top.withdraw()  
-    file_name = tkinter.filedialog.askopenfilename(parent=top, title = "Select file",filetypes = (("csv files","*.csv"), ))
-    shutil.copy(file_name, "./static/mazes/user_maze.csv")
-    top.destroy()
+    try:
+        top = tkinter.Tk()
+        top.withdraw()  
+        file_name = tkinter.filedialog.askopenfilename(parent=top, title = "Select file",filetypes = (("csv files","*.csv"), ))
+        shutil.copy(file_name, "./static/mazes/user_maze.csv")
+        top.destroy()
+    except:
+        pass
 
 #Función que dado un path de un archivo .csv retorna el tamaño (filas, columnas) del laberinto 
 def maze_size(path):

@@ -3,9 +3,9 @@ import pygame, sys, random
 from mazeprocess import *
 from data import *
 from button import Button
+from algorithms import *
 
 size = (1000, 700)
-
 
 class Game(object):
     
@@ -14,6 +14,7 @@ class Game(object):
         self.path = ''
         self.solving = False
         self.solution_path = []
+        self.final_path=[]
         self.page = 'home'              #posibles páginas: home, maze
         self.solve_method =''          #posibles methods: a:anchura, ae:a*, bdcu:búsqeda de costo uniforme, bg:búsqueda greedy
                                         #p: profundidad, pi:profundidad iterativa, '': no se ha escogido
@@ -124,8 +125,8 @@ class Game(object):
                 else:                        
                     if self.click_b_run and not self.solving:
                         self.solving = not self.solving
-                        if self.path == 'static/mazes/maze_5x5.csv' and self.solve_method == 'p':
-                            self.solution_path = solution_5x5
+                        if self.solve_method == 'p':
+                            self.solution_path, self.final_path = depth_search((0,1), (self.m-1, self.n-2), self.path)
     
     
     def display_frame(self, screen):
@@ -179,7 +180,7 @@ class Game(object):
                     selected_method = pygame.image.load(f"static/images/resolverpor/{self.solve_method}.png")
                     selected_method = pygame.transform.scale(selected_method, images_data['selected_method'][0])
                     screen.blit(selected_method, images_data['selected_method'][1])
-                    if self.path == 'static/mazes/maze_5x5.csv' and self.solve_method == 'p' and self.solving:
+                    if self.solving:
                         maze_draw_solution(screen, self.color, self.cell_size, self.solution_path)
                         self.solving = False
                 

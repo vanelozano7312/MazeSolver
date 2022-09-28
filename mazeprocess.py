@@ -6,6 +6,16 @@ import shutil
 import tkinter, os
 import tkinter.filedialog
 
+# Guarda el laberinto del archivo .csv en una lista de listas
+def csv_to_list (path):
+    maze = []
+    with open(path) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            if row != []:
+                maze.append(row)
+    return maze
+
 #Función que permite al usuario subir un archivo .csv y lo guarda en static/mazes/user_maze
 def upload_maze():
     try:
@@ -65,7 +75,7 @@ def maze_draw(screen, color, path, cell_size, x_start, y_start):
 #Función que dibuja la solucion del maze
 def maze_draw_solution(screen, color, cell_size, solution_path):
     for cell in solution_path:
-        pygame.draw.rect(screen, colors[color][0], (cell_size*(cell[1]-1), cell_size*(cell[0]-1), cell_size, cell_size))
+        pygame.draw.rect(screen, colors[color][0], (cell_size*(cell[1]), cell_size*(cell[0]), cell_size, cell_size))
         pygame.time.wait(100)
         pygame.display.flip()
         

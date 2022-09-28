@@ -1,17 +1,9 @@
 import csv
-
-# Guarda el laberinto del archivo .csv en una lista de listas
-def csv_to_list (path):
-    maze = []
-    with open(path) as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
-        for row in csv_reader:
-            if row != []:
-                maze.append(row)
-    return maze
+from mazeprocess import csv_to_list
 
 # Búsqueda en profundidad que recibe como argumentos la lista asociada al laberinto, la posición de inicio y la de salida
-def depth_search(maze, start, end):
+def depth_search(start, end, file):
+    maze = csv_to_list(file)
     solution = [start]
     path = [start]
     pos = start
@@ -39,7 +31,5 @@ def depth_search(maze, start, end):
         else:
             maze[pos[0]][pos[1]] = 'e';
             solution.remove(pos);
-            pos = solution[len(path)-1]
-    print(path)
-    print(solution)
-        
+            pos = solution[len(solution)-1]
+    return path, solution

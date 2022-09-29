@@ -74,8 +74,16 @@ def maze_draw(screen, color, path, cell_size, x_start, y_start):
                 
 #Función que dibuja la solucion del maze
 def maze_draw_solution(screen, color, cell_size, solution_path):
+    if type(color[0]) != int :
+        color = colors[color][0]
     for cell in solution_path:
-        pygame.draw.rect(screen, colors[color][0], (cell_size*(cell[1]), cell_size*(cell[0]), cell_size, cell_size))
-        pygame.time.wait(100)
+        pygame.draw.rect(screen, color, (cell_size*(cell[1]), cell_size*(cell[0]), cell_size, cell_size))
+        pygame.time.wait(20)
         pygame.display.flip()
         
+#Función que dibuja el path del maze
+def maze_draw_path(screen, color, cell_size, final_path):
+    if type(color[0]) != int :
+        color = colors[color][0]
+    for cell in final_path:
+        pygame.draw.rect(screen, color, (cell_size*(cell[1]), cell_size*(cell[0]), cell_size, cell_size))

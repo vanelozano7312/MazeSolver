@@ -29,7 +29,7 @@ def depth_search(start, end, file):
             path.append(above)
             solution.append(above)
         else:
-            maze[pos[0]][pos[1]] = 'e';
-            solution.remove(pos);
+            maze[pos[0]][pos[1]] = 'e'
+            solution.remove(pos)
             pos = solution[len(solution)-1]
     return path, solution

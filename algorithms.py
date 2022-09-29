@@ -35,6 +35,10 @@ def normal (reached,start):
     path.reverse()
     return [solution,path]
 
+#Heuristica para la función de busqueda A*
+def star_heuristic(coord,end):
+    return (end[0]-coord[0])+(end[1]-coord[1])
+
 #Busqueda en anchura, recibe como argumentos la posicion de inicio, fin, y el archivo asociado al laberinto
 def breadth_search(start,end,path):
     maze = csv_to_list (path)
@@ -86,6 +90,41 @@ def uniform_cost_search(start,end,path):
         node = frontier.get()
         if node[2].coord not in reached:
             reached.append(node[2])
+    reached.append(finisher)
+    if goal:
+        print(-1)
+        print(-1)
+        return [-1,-1]
+    tmp = normal(reached,start)
+    solution = tmp[0]
+    path = tmp[1]
+    return solution, path
+
+#Busqueda A*, recibe lo mismo que todos los demas a este punto
+def a_star_search(start,end,path):
+    i = 1
+    maze = csv_to_list(path)
+    reached = []
+    goal = True
+    frontier = queue.PriorityQueue()
+    ndstart = Node(start,Node((-1,-1),(-1,-1)))
+    frontier.put((1+star_heuristic(start,end),1,i,ndstart))
+    while goal and (not frontier.empty()):
+        node = frontier.get()
+        g = node[1]+1
+        if node[3].coord not in reached:
+            reached.append(node[3])
+            for x in expand(node[3].coord,node[3].parent.coord,maze):
+                i = i+1
+                if x == end:
+                    goal = False
+                    finisher = Node(x,node[3])
+                    break
+                frontier.put((g+star_heuristic(node[3].coord,end),g,i,Node(x,node[3])))
+    while not frontier.empty():
+        node = frontier.get()
+        if node[3].coord not in reached:
+            reached.append(node[3])
     reached.append(finisher)
     if goal:
         print(-1)

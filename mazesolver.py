@@ -132,7 +132,7 @@ class Game(object):
                         end = time.time()
                     elif self.solve_method == 'a':
                         start = time.time()
-                        self.solution_path, self.final_path = depth_search((0,1), (self.m-1, self.n-2), self.path)
+                        self.solution_path, self.final_path = breadth_search((0,1), (self.m-1, self.n-2), self.path)
                         end = time.time()
                     elif self.solve_method == 'pi':
                         start = time.time()
@@ -140,7 +140,7 @@ class Game(object):
                         end = time.time()
                     elif self.solve_method == 'bdcu':
                         start = time.time()
-                        self.solution_path, self.final_path = depth_search((0,1), (self.m-1, self.n-2), self.path)
+                        self.solution_path, self.final_path = uniform_cost_search((0,1), (self.m-1, self.n-2), self.path)
                         end = time.time()
                     elif self.solve_method == 'bg':
                         start = time.time()

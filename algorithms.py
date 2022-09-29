@@ -1,5 +1,6 @@
 import csv
 from mazeprocess import csv_to_list
+import queue
 
 # Clase usada para guardar tanto coordenadas como nodo padre, esta es usada en Breadth, Uniform Cost y A*
 class Node:
@@ -35,7 +36,7 @@ def normal (reached,start):
     return [solution,path]
 
 #Busqueda en anchura, recibe como argumentos la posicion de inicio, fin, y el archivo asociado al laberinto
-def breadth_search (start,end,path):
+def breadth_search(start,end,path):
     maze = csv_to_list (path)
     reached = []
     goal = True
@@ -59,8 +60,7 @@ def breadth_search (start,end,path):
     tmp = normal(reached,start)
     solution = tmp[0]
     path = tmp[1]
-    print(solution)
-    print(path)
+    return solution, path
 
 #Busqueda de costo uniforme, recibe como parametros posicion de inicio, fin, y archivo asociado al laberinto
 def uniform_cost_search(start,end,path):
@@ -94,8 +94,7 @@ def uniform_cost_search(start,end,path):
     tmp = normal(reached,start)
     solution = tmp[0]
     path = tmp[1]
-    print(solution)
-    print(path)
+    return solution, path
 
 # Búsqueda en profundidad que recibe como argumentos la lista asociada al laberinto, la posición de inicio y la de salida
 def depth_search(start, end, file):

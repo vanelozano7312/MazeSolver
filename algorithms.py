@@ -1,6 +1,102 @@
 import csv
 from mazeprocess import csv_to_list
 
+# Clase usada para guardar tanto coordenadas como nodo padre, esta es usada en Breadth, Uniform Cost y A*
+class Node:
+    def __init__(self,coord,parent):
+        self.coord = coord
+        self.parent = parent
+    
+#Esta función toma la coordenada de un nodo, un padre y un laberinto en forma matricial y devuelve la expancion de este nodo como lista de coordenadas
+def expand(node,parent,maze):
+    exp = []
+    if (node[0],node[1]+1) != parent and maze[node[0]][node[1]+1] == 'c':
+        exp.append((node[0],node[1]+1))
+    if (node[0]+1,node[1]) != parent and maze[node[0]+1][node[1]] == 'c':
+        exp.append((node[0]+1,node[1]))
+    if (node[0],node[1]-1) != parent and maze[node[0]][node[1]-1] == 'c':
+        exp.append((node[0],node[1]-1))
+    if (node[0]-1,node[1]) != parent and maze[node[0]-1][node[1]] == 'c':
+        exp.append((node[0]-1,node[1]))
+    return exp
+
+#Esta función toma una lista de alcanzados y una coordenada de inicio y devuelve una lista de nodos alcanzados solo con coordenadas y una lista del camino optimo a tomar
+def normal (reached,start):
+    solution = []
+    for x in reached:
+        solution.append(x.coord)
+    path = []
+    node = reached[len(reached)-1]
+    while node.coord != start:
+        path.append(node.coord)
+        node = node.parent
+    path.append(start)
+    path.reverse()
+    return [solution,path]
+
+#Busqueda en anchura, recibe como argumentos la posicion de inicio, fin, y el archivo asociado al laberinto
+def breadth_search (start,end,path):
+    maze = csv_to_list (path)
+    reached = []
+    goal = True
+    frontier = queue.Queue()
+    ndstart = Node(start,Node((-1,-1),(-1,-1)))
+    frontier.put(ndstart)
+    while goal and (not frontier.empty()):
+        node = frontier.get()
+        reached.append(node)
+        for x in expand(node.coord,node.parent.coord,maze):
+            frontier.put(Node(x,node))
+            if x == end:
+                goal = False
+                break
+    while not frontier.empty():
+        reached.append(frontier.get())
+    if goal:
+        print(-1)
+        print(-1)
+        return [-1,-1]
+    tmp = normal(reached,start)
+    solution = tmp[0]
+    path = tmp[1]
+    print(solution)
+    print(path)
+
+#Busqueda de costo uniforme, recibe como parametros posicion de inicio, fin, y archivo asociado al laberinto
+def uniform_cost_search(start,end,path):
+    i = 1
+    maze = csv_to_list(path)
+    reached = []
+    goal = True
+    frontier = queue.PriorityQueue()
+    ndstart = Node(start,Node((-1,-1),(-1,-1)))
+    frontier.put((1,i,ndstart))
+    while goal and (not frontier.empty()):
+        node = frontier.get()
+        if node[2].coord not in reached:
+            reached.append(node[2])
+            for x in expand(node[2].coord,node[2].parent.coord,maze):
+                i = i+1
+                if x == end:
+                    goal = False
+                    finisher = Node(x,node[2])
+                    break
+                frontier.put((node[0]+1,i,Node(x,node[2])))
+    while not frontier.empty():
+        node = frontier.get()
+        if node[2].coord not in reached:
+            reached.append(node[2])
+    reached.append(finisher)
+    if goal:
+        print(-1)
+        print(-1)
+        return [-1,-1]
+    tmp = normal(reached,start)
+    solution = tmp[0]
+    path = tmp[1]
+    print(solution)
+    print(path)
+
 # Búsqueda en profundidad que recibe como argumentos la lista asociada al laberinto, la posición de inicio y la de salida
 def depth_search(start, end, file):
     maze = csv_to_list(file)

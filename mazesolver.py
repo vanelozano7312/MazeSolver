@@ -125,20 +125,31 @@ class Game(object):
                 if self.click_b_run and not self.solving:
                     self.solved_maze = False
                     self.solving = not self.solving
-                    start = time.time()
+                    start, end = 0, 0
                     if self.solve_method == 'p':
+                        start = time.time()
                         self.solution_path, self.final_path = depth_search((0,1), (self.m-1, self.n-2), self.path)
+                        end = time.time()
                     elif self.solve_method == 'a':
+                        start = time.time()
                         self.solution_path, self.final_path = breadth_search((0,1), (self.m-1, self.n-2), self.path)
+                        end = time.time()
                     elif self.solve_method == 'pi':
-                        self.solution_path, self.final_path = iterative_depth((0,1), (self.m-1, self.n-2), self.path)
-                    elif self.solve_method == 'bdcu':
-                        self.solution_path, self.final_path = uniform_cost_search((0,1), (self.m-1, self.n-2), self.path)
-                    elif self.solve_method == 'bg':
+                        start = time.time()
                         self.solution_path, self.final_path = depth_search((0,1), (self.m-1, self.n-2), self.path)
+                        end = time.time()
+                    elif self.solve_method == 'bdcu':
+                        start = time.time()
+                        self.solution_path, self.final_path = uniform_cost_search((0,1), (self.m-1, self.n-2), self.path)
+                        end = time.time()
+                    elif self.solve_method == 'bg':
+                        start = time.time()
+                        self.solution_path, self.final_path = depth_search((0,1), (self.m-1, self.n-2), self.path)
+                        end = time.time()
                     elif self.solve_method == 'ae':
-                        self.solution_path, self.final_path = a_star_search((0,1), (self.m-1, self.n-2), self.path)
-                    end = time.time()
+                        start = time.time()
+                        self.solution_path, self.final_path = depth_search((0,1), (self.m-1, self.n-2), self.path)
+                        end = time.time()
                     self.solving_time = end - start
                     self.path_cell = 0
                     self.solution_cell = 0
@@ -200,9 +211,6 @@ class Game(object):
                     self.solving = False
                 if self.solved_maze:
                     #Mostramos el path final
-                    for i in self.final_path:
-                        maze_draw_path(screen, (255, 255, 255), self.cell_size, self.solution_path)
-                    
                     for i in self.final_path:
                         maze_draw_path(screen, (255, 222, 0), self.cell_size, self.final_path)
                     #Mostramos el tiempo

@@ -157,8 +157,6 @@ def a_star_search(start,end,path):
             reached.append(node[3])
     reached.append(finisher)
     if goal:
-        print(-1)
-        print(-1)
         return [-1,-1]
     tmp = normal(reached,start)
     solution = tmp[0]
@@ -241,7 +239,6 @@ def iterative_depth(start,end,file):
             x += 1
         levels.append(new_level)
         n += 1
-    print(levels)
     
     # Backtracking
     pos = end
@@ -258,7 +255,6 @@ def iterative_depth(start,end,file):
         solution.append(pos)
         n -= 1
         
-    print(solution)
     return levels, solution
 
 # Función Heurística del Greedy search      
@@ -279,7 +275,6 @@ def greedy_search(start,end,file):
         for x in list:
             if straight_line_d(pos,end) <= straight_line_d(closest,end) and x not in path:
                 closest = x
-        print(closest)
         if closest == pos:
             if pos in solution:
                 solution.remove(pos)

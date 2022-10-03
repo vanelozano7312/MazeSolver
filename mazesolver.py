@@ -27,6 +27,7 @@ class Game(object):
         self.b_10x10 = Button(images_data['maze_size_buttons'][0], images_data['maze_size_buttons'][1][1], 'b_10x10')
         self.b_50x50 = Button(images_data['maze_size_buttons'][0], images_data['maze_size_buttons'][1][2], 'b_50x50')
         self.b_100x100 = Button(images_data['maze_size_buttons'][0], images_data['maze_size_buttons'][1][3], 'b_100x100')
+        self.b_menu = Button(images_data['menu'][0], images_data['menu'][1], 'b_menu')
         self.b_p = Button(images_data['menu_buttons'][0], images_data['menu_buttons'][1][0], 'b_p')
         self.b_a = Button(images_data['menu_buttons'][0], images_data['menu_buttons'][1][1], 'b_a')
         self.b_pi = Button(images_data['menu_buttons'][0], images_data['menu_buttons'][1][2], 'b_pi')
@@ -41,6 +42,7 @@ class Game(object):
         self.click_b_10x10 = False
         self.click_b_50x50 = False
         self.click_b_100x100 = False
+        self.click_b_menu = False
         self.click_b_p = False
         self.click_b_a = False
         self.click_b_pi = False
@@ -65,6 +67,7 @@ class Game(object):
                 self.click_b_100x100 = self.b_100x100.button_pressed(event)
                 
             elif self.page == 'maze':
+                self.click_b_menu = self.b_menu.button_pressed(event)
                 self.click_b_home = self.b_home.button_pressed(event)
                 
                 if self.solve_method == '':
@@ -117,8 +120,22 @@ class Game(object):
                     self.solve_method = 'bg'
                 elif self.click_b_ae:
                     self.solve_method = 'ae'
-            else:                        
-                if self.click_b_run and not self.solving:
+            else:                   
+                if self.click_b_menu and not self.solving:
+                    self.solved_maze = False
+                    self.solving = False
+                    self.solution_path = []
+                    self.final_path=[]
+                    self.solving_time=0
+                    self.checked_cells = 0
+                    self.solve_method =''    
+                    self.click_b_p = False
+                    self.click_b_a = False
+                    self.click_b_pi = False
+                    self.click_b_bdcu = False
+                    self.click_b_bg = False
+                    self.click_b_ae = False
+                elif self.click_b_run and not self.solving:
                     self.solved_maze = False
                     self.solving = not self.solving
                     start, end = 0, 0
@@ -191,6 +208,8 @@ class Game(object):
                 if self.solving:
                     maze_draw_solution(screen, self.color, self.cell_size, self.solution_path)
                     self.solving = False
+                else:
+                    self.b_menu.draw(screen)
                     
                 #Si ya se resolvió muestra la solución en blanco y en amarillo el path final
                 if self.solved_maze:

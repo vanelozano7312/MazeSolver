@@ -10,12 +10,13 @@ size = (1000, 700)
 class Game(object):
     
     def __init__(self):
-        self.solved_maze = False
         self.path = ''
+        self.solved_maze = False
         self.solving = False
         self.solution_path = []
         self.final_path=[]
         self.solving_time=0
+        self.checked_cells = 0
         self.page = 'home'              #posibles páginas: home, maze
         self.solve_method =''          #posibles methods: a:anchura, ae:a*, bdcu:búsqeda de costo uniforme, bg:búsqueda greedy
                                         #p: profundidad, pi:profundidad iterativa, '': no se ha escogido
@@ -55,12 +56,7 @@ class Game(object):
             if event.type == pygame.QUIT:
                 return True
 
-            # #Si ya acabó de resolver el laberinto un click en la pantalla lo devuelve al home page
-            # if self.solved_maze:
-            #     if event.type == pygame.MOUSEBUTTONDOWN:
-            #         self.__init__()
-
-            #Si no se ha resuelto mira si algún botón válido ha sido presionado
+            #Mira si algún botón válido ha sido presionado
             if self.page == 'home':
                 self.click_upload_maze = self.upload_maze.button_pressed(event)
                 self.click_b_5x5 = self.b_5x5.button_pressed(event)
@@ -144,16 +140,10 @@ class Game(object):
                     self.path_cell = 0
                     self.solution_cell = 0
                     self.solved_maze = True
-    
+                    self.checked_cells = checked_cells(self.solution_path)
+                    
     
     def display_frame(self, screen):
-
-        # if self.solved_maze:
-        #     font = pygame.font.SysFont("serif", 25) # Fuente
-        #     text = font.render("Game Over, Click To Continue", True, (0, 0, 0)) # Texto
-        #     center_x = (size[0] // 2) - (text.get_width() // 2) # posicion text
-        #     center_y = (size[1] // 2) - (text.get_height() // 2)
-        #     screen.blit(text, [center_x, center_y]) # ponerlo en pantalla
 
         if self.page == 'home':
             #cargar imagenes y escalarlas
@@ -191,21 +181,22 @@ class Game(object):
                 self.b_bg.draw(screen)
                 self.b_ae.draw(screen)
                 
-        ##Si no mostramos el método escogido
             else:
+                ##Si no mostramos el método escogido
                 selected_method = pygame.image.load(f"static/images/resolverpor/{self.solve_method}.png")
                 selected_method = pygame.transform.scale(selected_method, images_data['selected_method'][0])
                 screen.blit(selected_method, images_data['selected_method'][1])
+                
+                #Si se está resolviendo dibuja una a una las casillas 
                 if self.solving:
                     maze_draw_solution(screen, self.color, self.cell_size, self.solution_path)
                     self.solving = False
-                if self.solved_maze:
-                    #Mostramos el path final
-                    for i in self.final_path:
-                        maze_draw_path(screen, (255, 255, 255), self.cell_size, self.solution_path)
                     
-                    for i in self.final_path:
-                        maze_draw_path(screen, (255, 222, 0), self.cell_size, self.final_path)
+                #Si ya se resolvió muestra la solución en blanco y en amarillo el path final
+                if self.solved_maze:
+                    maze_draw_path(screen, (255, 255, 255), self.cell_size, self.solution_path)
+                    maze_draw_path(screen, (255, 222, 0), self.cell_size, self.final_path)
+                    
                     #Mostramos el tiempo
                     time = pygame.image.load("static/images/tiempo.png")
                     time = pygame.transform.scale(time, images_data['time'][0])
@@ -214,6 +205,13 @@ class Game(object):
                     text = font.render(f"{self.solving_time}", True, (255, 255, 255))
                     screen.blit(text, (864, 393)) # ponerlo en pantalla
                     
+                    #Mostramos las celdas revisadas
+                    cells = pygame.image.load("static/images/celdasrevisadas.png")
+                    cells = pygame.transform.scale(cells, images_data['cells'][0])
+                    screen.blit(cells, images_data['cells'][1])
+                    font = pygame.font.SysFont("serif", 25) # Fuente
+                    text = font.render(f"{self.checked_cells}", True, (255, 255, 255))
+                    screen.blit(text, (840, 530)) # ponerlo en pantalla
             
             self.b_home.draw(screen)
         

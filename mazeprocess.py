@@ -41,7 +41,6 @@ def maze_size(path):
         # print(f'Processed {line_count} lines and {row_count} rows.')
         return line_count, column_count
 
-
 #Función que dada una matriz MxN calcula el tamaño de cada celda y el inicio en X y Y a dibujar
 # (está como si la pantalla de juego default fuera de 700x700)
 def display_size(m, n):
@@ -54,8 +53,7 @@ def display_size(m, n):
         y_start = (700 - (m*cell_size))/2
         x_start = 0
     return cell_size, x_start, y_start
-    
-    
+     
 #Función que dibuja el maze
 # (está como si la pantalla default fuera de 700x700)
 def maze_draw(screen, color, path, cell_size, x_start, y_start):
@@ -99,3 +97,17 @@ def maze_draw_path(screen, color, cell_size, final_path):
     else:
         for cell in final_path:
             pygame.draw.rect(screen, color, (cell_size*(cell[1]), cell_size*(cell[0]), cell_size, cell_size))
+            
+#Función que cuenta las celdas revisadas
+def checked_cells(solution_path):
+    return len(flatter(solution_path))
+
+
+def flatter(lst):
+    ret = []
+    for elem in lst:
+        if isinstance(elem, list):
+            ret.extend(flatter(elem))
+        else:
+            ret.append(elem)
+    return ret

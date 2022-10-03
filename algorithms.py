@@ -50,12 +50,13 @@ def breadth_search(start,end,path):
     frontier.put(ndstart)
     while goal and (not frontier.empty()):
         node = frontier.get()
-        reached.append(node)
-        for x in expand(node.coord,node.parent.coord,maze):
-            frontier.put(Node(x,node))
-            if x == end:
-                goal = False
-                break
+        if node not in reached:
+            reached.append(node)
+            for x in expand(node.coord,node.parent.coord,maze):
+                frontier.put(Node(x,node))
+                if x == end:
+                    goal = False
+                    break
     while not frontier.empty():
         reached.append(frontier.get())
     if goal:

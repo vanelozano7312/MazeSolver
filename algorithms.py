@@ -23,18 +23,15 @@ def expand(node,parent,maze):
     return exp
 
 #Esta función toma una lista de alcanzados y una coordenada de inicio y devuelve una lista de nodos alcanzados solo con coordenadas y una lista del camino optimo a tomar
-def normal (reached,start):
-    solution = []
-    for x in reached:
-        solution.append(x.coord)
+def normal (reacher,start):
     path = []
-    node = reached[len(reached)-1]
+    node = reacher
     while node.coord != start:
         path.append(node.coord)
         node = node.parent
     path.append(start)
     path.reverse()
-    return [solution,path]
+    return path
 
 #Heuristica para la función de busqueda A*
 def star_heuristic(coord,end):
@@ -43,66 +40,63 @@ def star_heuristic(coord,end):
 #Busqueda en anchura, recibe como argumentos la posicion de inicio, fin, y el archivo asociado al laberinto
 def breadth_search(start,end,path):
     maze = csv_to_list (path)
-    reached = []
     goal = True
+    solution = []
     frontier = queue.Queue()
     ndstart = Node(start,Node((-1,-1),(-1,-1)))
     frontier.put(ndstart)
     while goal and (not frontier.empty()):
         node = frontier.get()
-        if node not in reached:
-            reached.append(node)
-            for x in expand(node.coord,node.parent.coord,maze):
-                frontier.put(Node(x,node))
+        for x in expand(node.coord,node.parent.coord,maze):
+            if x not in solution:
                 if x == end:
+                    reacher = Node(x,node)
                     goal = False
                     break
+                solution.append(x)
+                frontier.put(Node(x,node))
     while not frontier.empty():
-        reached.append(frontier.get())
+        x = frontier.get()
+        solution.append(x.coord)
     if goal:
         return [-1,-1]
-    tmp = normal(reached,start)
-    solution = tmp[0]
-    path = tmp[1]
+    path = normal(reacher,start)
     return solution, path
 
 #Busqueda de costo uniforme, recibe como parametros posicion de inicio, fin, y archivo asociado al laberinto
 def uniform_cost_search(start,end,path):
     i = 1
     maze = csv_to_list(path)
-    reached = []
+    solution = [start]
     goal = True
     frontier = queue.PriorityQueue()
     ndstart = Node(start,Node((-1,-1),(-1,-1)))
     frontier.put((1,i,ndstart))
     while goal and (not frontier.empty()):
         node = frontier.get()
-        if node[2].coord not in reached:
-            reached.append(node[2])
-            for x in expand(node[2].coord,node[2].parent.coord,maze):
+        for x in expand(node[2].coord,node[2].parent.coord,maze):
+            if x not in solution:
+                solution.append(x)
                 i = i+1
                 if x == end:
                     goal = False
-                    finisher = Node(x,node[2])
+                    reacher = Node(x,node[2])
                     break
                 frontier.put((node[0]+1,i,Node(x,node[2])))
     while not frontier.empty():
         node = frontier.get()
-        if node[2].coord not in reached:
-            reached.append(node[2])
-    reached.append(finisher)
+        if node[2].coord not in solution:
+            solution.append(node[2].coord)
     if goal:
         return [-1,-1]
-    tmp = normal(reached,start)
-    solution = tmp[0]
-    path = tmp[1]
+    path = normal(reacher,start)
     return solution, path
 
 #Busqueda A*, recibe lo mismo que todos los demas a este punto
 def a_star_search(start,end,path):
     i = 1
     maze = csv_to_list(path)
-    reached = []
+    solution = [start]
     goal = True
     frontier = queue.PriorityQueue()
     ndstart = Node(start,Node((-1,-1),(-1,-1)))
@@ -110,58 +104,22 @@ def a_star_search(start,end,path):
     while goal and (not frontier.empty()):
         node = frontier.get()
         g = node[1]+1
-        if node[3].coord not in reached:
-            reached.append(node[3])
-            for x in expand(node[3].coord,node[3].parent.coord,maze):
+        for x in expand(node[3].coord,node[3].parent.coord,maze):
+            if x not in solution:
+                solution.append(x)
                 i = i+1
                 if x == end:
                     goal = False
-                    finisher = Node(x,node[3])
+                    reacher = Node(x,node[3])
                     break
                 frontier.put((g+star_heuristic(node[3].coord,end),g,i,Node(x,node[3])))
     while not frontier.empty():
         node = frontier.get()
-        if node[3].coord not in reached:
-            reached.append(node[3])
-    reached.append(finisher)
+        if node[3].coord not in solution:
+            solution.append(node[3].coord)
     if goal:
         return [-1,-1]
-    tmp = normal(reached,start)
-    solution = tmp[0]
-    path = tmp[1]
-    return solution, path
-
-#Busqueda A*, recibe lo mismo que todos los demas a este punto
-def a_star_search(start,end,path):
-    i = 1
-    maze = csv_to_list(path)
-    reached = []
-    goal = True
-    frontier = queue.PriorityQueue()
-    ndstart = Node(start,Node((-1,-1),(-1,-1)))
-    frontier.put((1+star_heuristic(start,end),1,i,ndstart))
-    while goal and (not frontier.empty()):
-        node = frontier.get()
-        g = node[1]+1
-        if node[3].coord not in reached:
-            reached.append(node[3])
-            for x in expand(node[3].coord,node[3].parent.coord,maze):
-                i = i+1
-                if x == end:
-                    goal = False
-                    finisher = Node(x,node[3])
-                    break
-                frontier.put((g+star_heuristic(node[3].coord,end),g,i,Node(x,node[3])))
-    while not frontier.empty():
-        node = frontier.get()
-        if node[3].coord not in reached:
-            reached.append(node[3])
-    reached.append(finisher)
-    if goal:
-        return [-1,-1]
-    tmp = normal(reached,start)
-    solution = tmp[0]
-    path = tmp[1]
+    path = normal(reacher,start)
     return solution, path
 
 # Búsqueda en profundidad que recibe como argumentos la lista asociada al laberinto, la posición de inicio y la de salida

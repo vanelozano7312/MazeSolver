@@ -102,7 +102,7 @@ def maze_draw_path(screen, color, cell_size, final_path):
 def checked_cells(solution_path):
     return len(flatter(solution_path))
 
-
+#Función que pasa lista de listas a lista de enteros
 def flatter(lst):
     ret = []
     for elem in lst:

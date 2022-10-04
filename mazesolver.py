@@ -19,7 +19,7 @@ class Game(object):
         self.checked_cells = 0
         self.page = 'home'              #posibles páginas: home, maze
         self.solve_method =''          #posibles methods: a:anchura, ae:a*, bdcu:búsqeda de costo uniforme, bg:búsqueda greedy
-                                        #p: profundidad, pi:profundidad iterativa, '': no se ha escogido
+                                        #p: profundidad, pi:profundidad iterativa, st: search tree ,'': no se ha escogido
         
         ##Creamos todos los botones necesarios y los inicializamos
         self.upload_maze = Button(images_data['upload_maze'][0], images_data['upload_maze'][1], 'upload_maze')
@@ -36,7 +36,7 @@ class Game(object):
         self.b_ae = Button(images_data['menu_buttons'][0], images_data['menu_buttons'][1][5], 'b_ae')
         self.b_home = Button(images_data['home'][0], images_data['home'][1], 'b_home')
         self.b_run = Button(images_data['runmaze'][0], images_data['runmaze'][1], 'b_run')
-        # self.b_run.pressed(images_data['runmaze'][0], 'b_runpressed')
+        
         self.click_upload_maze = False
         self.click_b_5x5 = False
         self.click_b_10x10 = False
@@ -173,7 +173,7 @@ class Game(object):
             self.b_50x50.draw(screen)
             self.b_100x100.draw(screen)
                 
-        elif self.page == 'maze':
+        elif self.page == 'maze':        
         ##Mostramos el maze
             #cargar imagenes y escalarlas
             maze_view = pygame.image.load('static/images/maze_view.png')
@@ -243,6 +243,7 @@ def main():
 
     #crear ventana
     screen = pygame.display.set_mode(size)
+    #crear ventana para el search tree
     #fps
     clock =  pygame.time.Clock()
     
